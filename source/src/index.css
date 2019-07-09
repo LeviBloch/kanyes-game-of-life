@@ -6,7 +6,6 @@ p {
   display: table;
 }
 .cell {
-  border: 1px solid blue;
   padding: 0;
   margin-right: -1px;
   margin-top: -1px;
