@@ -8,10 +8,26 @@ class Game extends React.Component {
 
     this.state = {
       isSimulating: false,
+      width: 0,
+      height: 0 
     }
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    
+  }
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+  
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+  
+  updateWindowDimensions() {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
   render() {
-    return <Board rows={10} cols={16} />;
+    return <Board rows={10} cols={16} windowSize={[this.state.width, this.state.height]} />;
   }
 }
 
@@ -28,12 +44,12 @@ class Board extends React.Component {
     }
 
     this.state = {
-      cellStates,
+      cellStates
     };
-
     //bind stuff
     this.updateCells = this.updateCells.bind(this);
     this.surroundingLivingCells = this.surroundingLivingCells.bind(this);
+    
   }
 
   // could probably use .map here instead of nested for loops
@@ -94,6 +110,8 @@ class Board extends React.Component {
         onClick={() => this.handleClick(row, col)}
         row={row}
         col={col}
+        board={this}
+        windowSize={this.props.windowSize}
       />
     )
   }
@@ -126,6 +144,10 @@ function Cell(props) {
   return(
     <img
       className='cell'
+      style={{
+        width: (props.windowSize[1]-100)/props.board.props.rows,
+        height: (props.windowSize[1]-100)/props.board.props.rows,
+      }}
       onClick={props.onClick}
       src={src}
     />
